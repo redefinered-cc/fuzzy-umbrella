@@ -17,12 +17,18 @@ jobs:
         env:
           ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
           WEBHOOK_URL: ${{ secrets.AGENT_WEBHOOK_URL }}
+          WEBHOOK_TOKEN: ${{ secrets.AGENT_WEBHOOK_TOKEN }}
         run: |
           if [ -z "$WEBHOOK_URL" ]; then
             echo "::error::AGENT_WEBHOOK_URL secret is not set. Add it in Settings → Secrets and variables → Actions."
             exit 1
           fi
+          if [ -z "$WEBHOOK_TOKEN" ]; then
+            echo "::error::AGENT_WEBHOOK_TOKEN secret is not set. Add it in Settings → Secrets and variables → Actions."
+            exit 1
+          fi
           payload=$(jq -n --arg num "$ISSUE_NUMBER" '{issue_number: $num}')
           curl -X POST "$WEBHOOK_URL" \
-            -H "Content-Type: application/json" \
+            -H "Content-Type: text/plain" \
+            -H "Authorization: Bearer $WEBHOOK_TOKEN" \
             -d "$payload"
