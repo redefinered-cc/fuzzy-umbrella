@@ -1,0 +1,22 @@
+name: Trigger Cursor Agent
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number to process'
+        required: true
+        type: string
+
+jobs:
+  run-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Step that uses the payload:
+      - name: Run automation agent
+        env:
+          ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
+        run: |
+          echo "Processing issue $ISSUE_NUMBER"
+          # Replace with: your script, API call, or agent invocation
