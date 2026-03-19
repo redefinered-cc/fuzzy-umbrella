@@ -7,6 +7,8 @@ on:
         description: 'Issue number to process'
         required: true
         type: string
+  issues:
+    types: [opened]
 
 jobs:
   run-agent:
@@ -15,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Call automation agent webhook
         env:
-          ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
+          ISSUE_NUMBER: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.issue_number || github.event.issue.number }}
           WEBHOOK_URL: ${{ secrets.AGENT_WEBHOOK_URL }}
           WEBHOOK_TOKEN: ${{ secrets.AGENT_WEBHOOK_TOKEN }}
         run: |
