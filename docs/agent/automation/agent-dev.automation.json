@@ -1,0 +1,19 @@
+{
+  "name": "agent:dev",
+  "triggers": [
+    {
+      "webhook": {}
+    }
+  ],
+  "actions": [],
+  "prompts": [
+    {
+      "prompt": "Load and execute the implementation contract from docs/agent/prompt/agent-dev-prompt.md exactly."
+    }
+  ],
+  "memoryEnabled": true,
+  "scope": "team_visible",
+  "gitConfig": {
+    "branch": "main"
+  }
+}

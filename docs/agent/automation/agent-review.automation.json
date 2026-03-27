@@ -1,0 +1,19 @@
+{
+  "name": "agent:review",
+  "triggers": [
+    {
+      "webhook": {}
+    }
+  ],
+  "actions": [],
+  "prompts": [
+    {
+      "prompt": "Load and execute the review contract from docs/agent/prompt/agent-review-prompt.md exactly."
+    }
+  ],
+  "memoryEnabled": true,
+  "scope": "team_visible",
+  "gitConfig": {
+    "branch": "main"
+  }
+}

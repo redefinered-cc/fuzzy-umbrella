@@ -1,0 +1,19 @@
+{
+  "name": "agent:plan",
+  "triggers": [
+    {
+      "webhook": {}
+    }
+  ],
+  "actions": [],
+  "prompts": [
+    {
+      "prompt": "Load and execute the planning contract from docs/agent/prompt/agent-plan-prompt.md exactly."
+    }
+  ],
+  "memoryEnabled": true,
+  "scope": "team_visible",
+  "gitConfig": {
+    "branch": "main"
+  }
+}
