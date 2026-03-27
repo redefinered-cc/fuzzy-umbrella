@@ -19,6 +19,10 @@ This package scaffolds router workflows and Cursor automation prompt/json files.
 - AgentReview: PR label `agent:review`
 - AgentTest: PR review submitted with state `approved`
 
+### Quality gates (CI / Snyk / Sonar)
+
+Scaffold includes `.github/workflows/ci.yml`, `snyk.yml`, and `sonar.yml`. They run on **pull requests** (and CI also on `main` pushes). When Agent Dev opens or updates a PR, GitHub runs these checks in parallel with the agent router—no extra wiring in `router.yml` is required.
+
 ### Required secrets
 
 Set in **GitHub -> Settings -> Secrets and variables -> Actions**:
@@ -27,6 +31,8 @@ Set in **GitHub -> Settings -> Secrets and variables -> Actions**:
 - `AGENT_WEBHOOK_URL_DEV`, `AGENT_WEBHOOK_TOKEN_DEV`
 - `AGENT_WEBHOOK_URL_REVIEW`, `AGENT_WEBHOOK_TOKEN_REVIEW`
 - `AGENT_WEBHOOK_URL_TEST`, `AGENT_WEBHOOK_TOKEN_TEST`
+- `SNYK_TOKEN` (Snyk workflow)
+- `SONAR_TOKEN`, `SONAR_HOST_URL` (Sonar workflow)
 
 ### Cursor setup
 
