@@ -8,15 +8,12 @@ on:
         required: true
         type: string
   issues:
-    # Humans change Project Status; Project automation mirrors status to labels used here.
-    # Required mirror labels:
-    # - Ready -> status:ready (triggers AgentPlan)
-    # - In progress -> status:in_progress (triggers AgentDev)
+    # Humans apply issue labels so Actions can route webhooks (no Project→label mirroring required).
+    # status:ready — ready for planning (AgentPlan)
+    # status:in_progress — ready for implementation after plan approval (AgentDev)
     types: [opened, labeled]
   pull_request:
     types: [opened, edited, labeled, synchronize]
-  pull_request_review:
-    types: [submitted]
 
 permissions:
   contents: read
@@ -116,9 +113,9 @@ jobs:
 
   agent-test:
     if: >
-      github.event_name == 'pull_request_review' &&
-      github.event.action == 'submitted' &&
-      github.event.review.state == 'approved'
+      github.event_name == 'pull_request' &&
+      github.event.action == 'labeled' &&
+      github.event.label.name == 'status:test_plan_requested'
     runs-on: ubuntu-latest
     steps:
       - name: Call AgentTest webhook

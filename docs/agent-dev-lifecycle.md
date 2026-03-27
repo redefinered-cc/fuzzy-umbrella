@@ -2,21 +2,67 @@
 
 This project defines an agent-driven development lifecycle using GitHub Issues and GitHub Actions: issue intake → plan validation → implementation PR → automated quality gates (Sonar + Snyk) → AI first-pass PR review → manual test-case authoring → **human final review and merge** → deploy via GitHub Actions.
 
+### Goals
+
+- Turn a GitHub Issue into a repeatable, auditable workflow where agents can plan, implement, review, quality-check, and propose tests.
+- Keep the human in control at plan approval, **final PR review / merge**, and optional deployment environment approval.
+- Make quality gates (Sonar + Snyk) blocking and visible on PRs.
+
 ### Algorithm
 
-1. **Human** — Set Project **Status** to **Ready** to start AgentPlan (Project automation mirrors to `status:ready` for router trigger).
-2. **AgentPlan** — Write plan to `.cursor/plans/`; push; assign back to human.
-3. **Human** — Set Project **Status** to **In progress** to start AgentDev (Project automation mirrors to `status:in_progress` for router trigger).
-4. **AgentDev** — Implement saved plan; open PR (`Closes #n`); set ticket **Status** to **In review** when PR is linked.
+1. **Human** — Add issue label **`status:ready`** (meaning **ready for planning**) to start AgentPlan. See [`docs/labels.md`](labels.md).
+2. **AgentPlan** — Write plan to `.cursor/plans/`; push; remove **`status:ready`**; assign back to human.
+3. **Human** — Approve plan (`status:plan_approved`); add issue label **`status:in_progress`** (meaning **ready for implementation**) to start AgentDev.
+4. **AgentDev** — Implement saved plan; open PR (`Closes #n`); label PR **`agent:review`**; set ticket Project **Status** to **In review** when PR is linked.
 5. **Automated** — CI, Sonar, Snyk on the PR.
-6. **AgentReview** — First-pass review; does not merge.
-7. **Human** — Keep ticket **Status** in **In review** and request AgentTest.
+6. **AgentReview** — First-pass review; does not merge (triggered by PR label **`agent:review`**).
+7. **Human** — Add PR label **`status:test_plan_requested`** to request AgentTest (keep Project **In review** as needed for the board).
 8. **AgentTest** — Manual test checklist; does not merge.
 9. **Human** — Merge to `main`.
 10. **GitHub Actions** — [`deploy.yml`](../.github/workflows/deploy.yml) on push to `main`.
 
+### High-level workflow
+
+```mermaid
+flowchart TD
+  issue["Human: Create Ticket"]
+  planAgent["AgentPlan: Plan"]
+  humanPlanApprove["Human: Approve Plan"]
+  devAgent["AgentDev: PR"]
+  sonarSnyk["CI + Sonar + Snyk"]
+  reviewAgent["AgentReview: First-pass"]
+  testAgent["AgentTest: Manual Test Plan"]
+  humanMerge["Human: Final Review + Merge"]
+  deploy["deploy.yml on main"]
+
+  issue --> planAgent
+  planAgent --> humanPlanApprove
+  humanPlanApprove --> devAgent
+  devAgent --> sonarSnyk
+  sonarSnyk --> reviewAgent
+  reviewAgent --> testAgent
+  testAgent --> humanMerge
+  humanMerge --> deploy
+```
+
+### Roles and responsibilities
+
+- **Human**: creates issues, applies **router labels** per [`docs/labels.md`](labels.md), validates plans, performs **final PR review and merge**, optionally approves deploys (environment protection).
+- **AgentPlan**: produces plans from issues and hands work back to the human for validation.
+- **AgentDev**: implements approved plans, opens PRs, and keeps issues updated.
+- **AgentReview**: first-pass PR review (comments / request changes); does **not** replace human merge authority.
+- **AgentTest**: derives manual test plans from acceptance criteria and changed areas; does not execute tests in CI.
+- **GitHub Actions** ([`router.yml`](../.github/workflows/router.yml)): calls Cursor Automation webhooks from **issue/PR labels** (and `workflow_dispatch` for plan replay). **Deploy** runs only in [`deploy.yml`](../.github/workflows/deploy.yml) after merge to `main`.
+
 ### GitHub integration
 
-- Issues: triage moves Project item to **Ready** (AgentPlan) and **In progress** (AgentDev).
-- Project Status is source of truth: **Backlog → Ready → In progress → In review → Done**.
-- Router triggers are currently derived from mirrored labels due to GitHub Actions event constraints.
+- **Labels:** Full list and router mapping — [`docs/labels.md`](labels.md).
+- **Project Status:** Board visibility (**Backlog → Ready → In progress → In review → Done**); agents update via GraphQL. Actions **do not** subscribe to Project Status—use labels above for webhooks.
+- **PRs:** Must be linked to issues and use the shared PR template.
+- **Quality gates:** Sonar and Snyk workflows report required checks to PRs.
+
+### Deployment
+
+- Merging to the `main` branch triggers [`deploy.yml`](../.github/workflows/deploy.yml) (push workflow).
+- Ops may use **workflow dispatch** on `deploy.yml` for manual redeploys (see workflow inputs).
+- Optional environment protections can require manual approval before production deploys.

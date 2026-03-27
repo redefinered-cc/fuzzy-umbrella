@@ -8,12 +8,16 @@
   "actions": [],
   "prompts": [
     {
-      "prompt": "Load and execute the review contract from docs/agent/prompt/agent-review-prompt.md exactly."
+      "prompt": "You have access to GitHub pull request data. The payload includes `pull_request_number`.\n\nKeep the linked issue’s Project item at **In review** while reviewing (GraphQL `updateProjectV2ItemFieldValue` if needed; see [`docs/cursor-automations.md`](../../cursor-automations.md) §9).\n\nPerform a **first-pass** code review only. A **human** will do the final review and merge. Do **not** merge this PR. Prefer a **comment** review, or request changes where needed; do not imply the change is approved for production without human sign-off.\n\n1. Load the PR: title, body, diff, labels, checks status, and linked issues.\n2. Read the linked issue and the plan file under `.cursor/plans/` if referenced (e.g. `issue-*-*.plan.md`).\n3. Consider **CI**, **Sonar**, and **Snyk** (and any other required checks). If required checks are failing or pending in a way that blocks merge, say so clearly and do **not** treat the PR as ready.\n4. Review for: correctness vs acceptance criteria, security, maintainability, and test coverage implied by the plan.\n5. Submit a GitHub **pull request review**:\n   - Use **Comment** or **Request changes** as appropriate.\n   - Add inline comments on specific lines where helpful.\n   - Summarize findings and open questions.\n6. Do **not** push commits or alter the branch directly.\n\nIn the final response, include:\n\n- Review state you submitted (comment / request changes)\n- Short summary of findings\n"
     }
   ],
   "memoryEnabled": true,
   "scope": "team_visible",
   "gitConfig": {
+    "repo": "https://github.com/CC-Talent/cinco-uno",
+    "repos": [
+      "https://github.com/CC-Talent/cinco-uno"
+    ],
     "branch": "main"
   }
 }

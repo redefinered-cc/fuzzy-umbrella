@@ -10,7 +10,7 @@ assignees: ""
 
 Clearly describe what needs to be built.
 
-When the ticket should enter **AgentPlan**, set the Project **Status** to **Ready** on the team board.
+When the ticket should enter **AgentPlan**, add the issue label **`status:ready`** (ready for planning). That label triggers [`router.yml`](../../.github/workflows/router.yml); see [`docs/labels.md`](../../docs/labels.md). Align Project **Status** on the board separately if you use a Project—Actions does not listen to Status alone.
 
 ## Problem / motivation
 
@@ -23,7 +23,7 @@ Why is this needed? What problem does it solve?
 
 ## Constraints
 
-- Tech constraints
+- Tech constraints (languages, frameworks, infra)
 - Security / compliance constraints
 - Performance / scaling constraints
 
@@ -34,3 +34,4 @@ What is explicitly not in scope?
 ## References
 
 - Links to designs, documents, or related issues/PRs.
+

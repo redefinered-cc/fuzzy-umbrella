@@ -6,7 +6,7 @@ Implement the approved plan for that issue. Do **not** merge the pull request—
 
 Use GraphQL `updateProjectV2ItemFieldValue` on the linked Project item: set **In progress** when you start implementation. When the PR exists and is linked to the issue (`Closes`/`Refs` in the PR body and an issue comment with the PR URL), set **In review**. Resolve ids per [`docs/cursor-automations.md`](../../cursor-automations.md) §9.
 
-1. Fetch the issue. Confirm it has `status:plan_approved` and `agent:dev` (and human has handed off implementation). Read linked context and comments. Note the **issue title** for the PR.
+1. Fetch the issue. Confirm it has `status:plan_approved` and that the human has applied **`status:in_progress`** (that label triggers this run). Read linked context and comments. Note the **issue title** for the PR.
 2. Find the plan file under `./.cursor/plans/` matching `issue-<issue_number>-*.plan.md`. Read it fully; treat it as the source of truth for scope.
 3. Create a feature branch from `main`, name like `issue-<number>-<short-kebab-summary>` (lowercase kebab-case).
 4. Implement the plan: edit application code and config as needed. Follow repository conventions. Do not disable or weaken CI, Sonar, or Snyk checks.

@@ -66,10 +66,11 @@ Additional required output/actions:
 2. Create `./.cursor/plans/` if it does not exist.
 3. Commit the plan file to the current branch with a descriptive commit message.
 4. Push the commit to the remote repository.
-5. On the GitHub issue: **assign the issue back to the human** for plan validation (clear the AI/bot assignee if applicable), add labels `status:plan_ready` and `needs:human_input`, remove mirror label `status:ready` if present (so label-based router does not re-fire), and post an issue comment with a short summary and a pointer to the plan file path. Ensure Project **Status** is **Ready** per the section above.
+5. On the GitHub issue: **assign the issue back to the human** for plan validation (clear the AI/bot assignee if applicable), add labels `status:plan_ready` and `needs:human_input`, **remove label `status:ready`** if present (so [`router.yml`](../../.github/workflows/router.yml) does not re-fire AgentPlan), and post an issue comment with a short summary and a pointer to the plan file path. Ensure Project **Status** is **Ready** per the section above.
 
 In the final response, include:
 
 - exact plan file path
 - commit SHA
 - branch pushed
+
