@@ -141,7 +141,7 @@ The **human-facing trigger** is issue label **`status:ready`** (ready for planni
 - **Payload:** `{ "issue_number": "<n>" }`.
 - **Automation actions**:
   - Read plan file `.cursor/plans/issue-<n>-*.plan.md`.
-  - Implement on a branch, open a PR (`Closes #n`), label PR `agent:review`; set Project **In progress** during implementation, **In review** after the PR is linked to the issue (see [`docs/agent/prompt/agent-dev-prompt.md`](agent/prompt/agent-dev-prompt.md)).
+  - Continue on the **same** `implementation_branch` AgentPlan created (see plan file frontmatter); open a PR into `main` (`Closes #n`), label PR `agent:review`; set Project **In progress** during implementation, **In review** after the PR is linked to the issue (see [`docs/agent/prompt/agent-dev-prompt.md`](agent/prompt/agent-dev-prompt.md)).
 - **GitHub workflows:**
   - `ci.yml`, `sonar.yml`, and `snyk.yml` run on the PR and report status checks.
 

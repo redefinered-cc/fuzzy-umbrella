@@ -61,12 +61,28 @@ Additional required output/actions:
 - keep summary concise (3–6 words)
 - no spaces or special characters
 
+**Single shared branch with AgentDev (required):**
+
+- The **implementation branch name** must equal the plan file basename **without** `.plan.md`.  
+  Example: file `./.cursor/plans/issue-1-uno-react-typescript-vite.plan.md` → branch `issue-1-uno-react-typescript-vite`.
+- At the **very top** of the plan file (before the markdown body), put YAML frontmatter:
+
+```yaml
+---
+issue: <number>
+implementation_branch: issue-<number>-<same-kebab-as-filename>
+---
+```
+
+- **Git workflow:** From `main`, **create** that branch, add **only** the plan file under `./.cursor/plans/` (no application code in this planning phase). Commit with a message that references the issue (e.g. `docs(plan): … Refs #<number>`). **Push** the branch to `origin`. AgentDev will use this same branch for implementation—do not leave the plan only on `main` without the named branch.
+
 1. Example filename for issue 1:
   - `./.cursor/plans/issue-1-uno-react-typescript-vite.plan.md`
 2. Create `./.cursor/plans/` if it does not exist.
-3. Commit the plan file to the current branch with a descriptive commit message.
-4. Push the commit to the remote repository.
-5. On the GitHub issue: **assign the issue back to the human** for plan validation (clear the AI/bot assignee if applicable), add labels `status:plan_ready` and `needs:human_input`, **remove label `status:ready`** if present (so [`router.yml`](../../.github/workflows/router.yml) does not re-fire AgentPlan), and post an issue comment with a short summary and a pointer to the plan file path. Ensure Project **Status** is **Ready** per the section above.
+3. On the GitHub issue: **assign the issue back to the human** for plan validation (clear the AI/bot assignee if applicable), add labels `status:plan_ready` and `needs:human_input`, **remove label `status:ready`** if present (so [`router.yml`](../../.github/workflows/router.yml) does not re-fire AgentPlan), and post an issue comment that includes:
+   - a short summary and a pointer to the plan file path;
+   - a line: **Implementation branch:** `issue-<number>-<kebab>` (AgentDev uses this branch; do not create a new feature branch from `main` for this issue).
+   Ensure Project **Status** is **Ready** per the section above.
 
 In the final response, include:
 
