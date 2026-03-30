@@ -14,3 +14,19 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## Deploy Timestamp Footer
+
+The app footer displays deploy metadata using the public build-time variable `VITE_LAST_DEPLOYED_AT`.
+
+- Expected format: ISO-8601 timestamp (example: `2026-03-30T09:30:45Z`).
+- Display format: UTC as `YYYY-MM-DD HH:mm:ss UTC`.
+- Fallback behavior: if the value is missing, empty, or invalid, the footer shows `Deploy time unavailable`.
+
+### Local testing
+
+Set the value in `.env.local`:
+
+```bash
+VITE_LAST_DEPLOYED_AT=2026-03-30T09:30:45Z
+```

@@ -153,12 +153,16 @@
   }
 }
 
-#spacer {
-  height: 88px;
+#deploy-info-footer {
   border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
+  padding: 24px 20px;
+}
+
+.deploy-info {
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .ticks {
