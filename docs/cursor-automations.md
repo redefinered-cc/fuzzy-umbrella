@@ -53,13 +53,12 @@ Once this repository is connected to Cursor Automations:
 - GitHub sends events to Cursor for actions such as:
   - Issue created / edited / labeled.
   - Pull request opened / synchronized / labeled.
-  - Projects v2 item updates (optional).
 - Each Automation defines a **trigger** that filters these events by:
   - Event type (issue, `pull_request`, etc.).
   - Action (opened, labeled, edited).
   - Fields such as labels, branches, or repository name.
 
-**Human-facing router triggers** are **labels** on issues and PRs. The Project **Status** field is for board visibility (agents update it via GraphQL); **GitHub Actions does not listen to Project Status**. Canonical label list: **[`docs/labels.md`](labels.md)**.
+**Human-facing router triggers** are **labels** on issues and PRs. This automation does **not** use GitHub Projects or Project Status for routing or agent behavior—only Issues, labels, and PRs. Canonical label list: **[`docs/labels.md`](labels.md)**.
 
 **AgentPlan entry ([`router.yml`](../.github/workflows/router.yml)):**
 
@@ -67,17 +66,6 @@ Once this repository is connected to Cursor Automations:
 2. **Router trigger:** `issues` `opened` (if the label is already present) / `labeled` with `status:ready`, or `workflow_dispatch` replay.
 
 Downstream: **`status:in_progress`** (AgentDev), **`agent:review`** (AgentReview), **`status:test_plan_requested`** (AgentTest), plus lifecycle labels such as `status:plan_approved`, `status:plan_ready`, etc.
-
-**Project Status during automation** (agents use GraphQL `updateProjectV2ItemFieldValue`; resolve project/item/field/option ids per §9):
-
-| Phase | Project Status |
-| ----- | -------------- |
-| Human starts planning | Ready |
-| AgentPlan working | In progress |
-| Plan posted; human approval | Ready |
-| AgentDev implementing | In progress |
-| PR linked to issue | In review |
-| Merged / complete | Done |
 
 **Router + webhooks:** [`router.yml`](../.github/workflows/router.yml) **POSTs** `{ "issue_number" }` or `{ "pull_request_number" }` to Cursor. Register **four** automations and store URL/token pairs as Actions secrets (§9).
 
@@ -104,7 +92,7 @@ They do **not** run the AI logic themselves—that runs in Cursor Automations af
 Cursor Automations are responsible for:
 
 - Running AI-powered agents (planning, implementation, review, test-plan).
-- Reading and modifying repository code (through the Cursor project).
+- Reading and modifying repository code (through the Cursor-connected repository).
 - Creating and updating GitHub artifacts:
   - Issue comments.
   - Labels and assignments.
@@ -129,8 +117,7 @@ The **human-facing trigger** is issue label **`status:ready`** (ready for planni
 - **Trigger (router):** `workflow_dispatch`; or `issues` with **`status:ready`** (`opened` / `labeled`).
 - **Payload:** `{ "issue_number": "<n>" }`.
 - **Automation actions**:
-  - Set Project **In progress** while planning, then **Ready** when the plan is posted (per prompt).
-  - Commit plan under `.cursor/plans/`, push, post issue comment, set labels (`status:plan_ready`, `needs:human_input`), remove **`status:ready`** so the router does not re-fire, **assign back to human** per prompt.
+  - Commit plan under `.cursor/plans/` on the implementation branch, push, post issue comment, set labels (`status:plan_ready`, `needs:human_input`), remove **`status:ready`** so the router does not re-fire, **assign back to human** per prompt.
 - **GitHub workflows:**
   - [`router.yml`](../.github/workflows/router.yml) sends the webhook; Cursor Automations perform the planning.
 
@@ -141,7 +128,7 @@ The **human-facing trigger** is issue label **`status:ready`** (ready for planni
 - **Payload:** `{ "issue_number": "<n>" }`.
 - **Automation actions**:
   - Read plan file `.cursor/plans/issue-<n>-*.plan.md`.
-  - Continue on the **same** `implementation_branch` AgentPlan created (see plan file frontmatter); open a PR into `main` (`Closes #n`), label PR `agent:review`; set Project **In progress** during implementation, **In review** after the PR is linked to the issue (see [`docs/agent/prompt/agent-dev-prompt.md`](agent/prompt/agent-dev-prompt.md)).
+  - Continue on the **same** `implementation_branch` AgentPlan created (see plan file frontmatter); open a PR into `main` (`Closes #n`), label PR `agent:review` (see [`docs/agent/prompt/agent-dev-prompt.md`](agent/prompt/agent-dev-prompt.md)).
 - **GitHub workflows:**
   - `ci.yml`, `sonar.yml`, and `snyk.yml` run on the PR and report status checks.
 
@@ -151,7 +138,7 @@ The **human-facing trigger** is issue label **`status:ready`** (ready for planni
   - `pull_request` **opened**, **edited**, or **labeled** with `agent:review` (not on every `synchronize` push, to avoid duplicate webhook spam).
 - **Payload:** `{ "pull_request_number": "<n>" }`.
 - **Automation actions**:
-  - Read the PR diff, linked issue, and plan; keep linked issue Project **In review** if updating Status.
+  - Read the PR diff, linked issue, and plan.
   - Run a **first-pass** review (prefer **comment** or request changes); **do not merge** (see [`docs/agent/prompt/agent-review-prompt.md`](agent/prompt/agent-review-prompt.md)).
 - **Sonar + Snyk + CI** are required quality signals on the PR; the agent must not treat the PR as ready if required checks are failing.
 - **Human** performs **final review and merge** after the manual test plan (when applicable).
@@ -162,7 +149,7 @@ The **human-facing trigger** is issue label **`status:ready`** (ready for planni
   - `pull_request` **`labeled`** with **`status:test_plan_requested`**.
 - **Payload:** `{ "pull_request_number": "<n>" }`.
 - **Automation actions**:
-  - Generate a **manual** test checklist (PR body or `docs/test-plans/`) per [`docs/agent/prompt/agent-test-prompt.md`](agent/prompt/agent-test-prompt.md); keep Project **In review** if updating Status.
+  - Generate a **manual** test checklist (PR body or `docs/test-plans/`) per [`docs/agent/prompt/agent-test-prompt.md`](agent/prompt/agent-test-prompt.md).
   - Optionally label `status:test_plan_ready`.
 - **GitHub workflows:**
   - No extra workflow required for authoring the checklist.
@@ -193,7 +180,7 @@ The **human-facing trigger** is issue label **`status:ready`** (ready for planni
 
 1. **Plan**  
    - Human creates an issue and adds **`status:ready`** when ready for planning.  
-   - `router.yml` triggers AgentPlan; the automation updates Project Status per §3 table, commits a plan file, posts on the issue, sets `status:plan_ready` / `needs:human_input`, removes **`status:ready`**, assigns back to the human.
+   - `router.yml` triggers AgentPlan; the automation commits a plan file, posts on the issue, sets `status:plan_ready` / `needs:human_input`, removes **`status:ready`**, assigns back to the human.
 
 2. **Approve and implement**  
    - Human reviews the plan and sets `status:plan_approved`, then adds **`status:in_progress`** to start AgentDev.  
@@ -228,8 +215,6 @@ To enable this flow with Cursor Automations:
 | `AGENT_WEBHOOK_URL_REVIEW` and `AGENT_WEBHOOK_TOKEN_REVIEW` | AgentReview |
 | `AGENT_WEBHOOK_URL_TEST` and `AGENT_WEBHOOK_TOKEN_TEST` | AgentTest |
 
-- **Agents updating Project Status:** Prompts use GraphQL `updateProjectV2ItemFieldValue`. Store **non-secret** ids as **Variables** (e.g. `PROJECT_V2_ID`, field ids, option ids for Backlog / Ready / In progress / In review / Done) or discover them at runtime via GraphQL; never commit tokens.
-- **Token permissions:** Default `GITHUB_TOKEN` in Actions has limited Project scope; org policies may require a **PAT** or GitHub App for agents to mutate Project fields—validate in your org.
 - Map router events to your Cursor webhook endpoints (each automation has its own URL in Cursor).
 - Ensure the label set described in `docs/agent-dev-lifecycle.md` / `docs/labels.md` exists in the GitHub repository.
 - Configure branch protection: require CI, Sonar, and Snyk where appropriate; require **human** reviewers for final merge if that is your policy.

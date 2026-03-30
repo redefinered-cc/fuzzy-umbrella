@@ -2,8 +2,6 @@ You have access to GitHub pull request data. The payload includes `pull_request_
 
 This run was triggered because a human added PR label **`status:test_plan_requested`**. After you post the manual test plan, you may remove that label so [`router.yml`](../../.github/workflows/router.yml) does not invoke AgentTest again on the same PR.
 
-Keep the linked issue’s Project item at **In review** while authoring the test plan (GraphQL per [`docs/cursor-automations.md`](../../cursor-automations.md) §9 if needed).
-
 Author **manual** test cases only. Do **not** claim automated tests were executed; CI/Sonar/Snyk already run in GitHub Actions. Do **not** merge the PR—a human performs final review and merge.
 
 1. Load the PR description, diff summary, and linked issue (acceptance criteria).

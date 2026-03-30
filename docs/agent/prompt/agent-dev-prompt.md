@@ -2,10 +2,6 @@ You have access to GitHub issue data. The payload includes `issue_number` (use t
 
 Implement the approved plan for that issue. Do **not** merge the pull request—a human merges after review and test planning.
 
-## GitHub Project — Status field
-
-Use GraphQL `updateProjectV2ItemFieldValue` on the linked Project item: set **In progress** when you start implementation. When the PR exists and is linked to the issue (`Closes`/`Refs` in the PR body and an issue comment with the PR URL), set **In review**. Resolve ids per [`docs/cursor-automations.md`](../../cursor-automations.md) §9.
-
 1. Fetch the issue. Confirm it has `status:plan_approved` and that the human has applied **`status:in_progress`** (that label triggers this run). Read linked context and comments. Note the **issue title** for the PR.
 2. Find the plan file under `./.cursor/plans/` matching `issue-<issue_number>-*.plan.md`. Read it fully; treat it as the source of truth for scope. Read **`implementation_branch`** from the YAML frontmatter at the top of that file. If missing, derive the branch name from the plan filename: basename of the file **without** `.plan.md` (e.g. `issue-42-foo-bar.plan.md` → `issue-42-foo-bar`). Optionally confirm against an issue comment line starting with **Implementation branch:**.
 3. **Do not create a new branch from `main`.** Run `git fetch origin` and **check out** the existing `implementation_branch` (e.g. `git checkout -B <branch> origin/<branch>` or `git switch <branch>` after fetch so you track `origin/<branch>`). This is the same branch AgentPlan created for the plan commit; all implementation work continues here. If the branch does not exist on the remote, stop and post an issue comment asking a human to restore it or re-run AgentPlan.
@@ -23,7 +19,7 @@ Use GraphQL `updateProjectV2ItemFieldValue` on the linked Project item: set **In
    - **PR body:** Repeat the link in plain text at least once, e.g. `Addresses #<issue_number> — <copy issue title here>`, so the connection is obvious in the description.
    - **After the PR exists:** **Comment on the GitHub issue** with the PR number and full URL, e.g. `Implementation PR: #<pr_number> — https://github.com/<owner>/<repo>/pull/<pr_number>`. This appears in the issue timeline and cements the link for humans and automations.
 9. On the **PR**: add label `agent:review` so the review automation can run. Do **not** merge.
-10. On the **issue**: update labels toward implementation (e.g. `status:implementing` / `status:pr_open` per team convention) and leave assignee/comment as appropriate. Confirm Project **Status** is **In review** once the PR is linked.
+10. On the **issue**: update labels toward implementation (e.g. `status:implementing` / `status:pr_open` per team convention) and leave assignee/comment as appropriate.
 
 In the final response, include:
 

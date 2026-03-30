@@ -13,10 +13,10 @@ This project defines an agent-driven development lifecycle using GitHub Issues a
 1. **Human** — Add issue label **`status:ready`** (meaning **ready for planning**) to start AgentPlan. See [`docs/labels.md`](labels.md).
 2. **AgentPlan** — Write plan to `.cursor/plans/`; push; remove **`status:ready`**; assign back to human.
 3. **Human** — Approve plan (`status:plan_approved`); add issue label **`status:in_progress`** (meaning **ready for implementation**) to start AgentDev.
-4. **AgentDev** — Implement saved plan; open PR (`Closes #n`); label PR **`agent:review`**; set ticket Project **Status** to **In review** when PR is linked.
+4. **AgentDev** — Implement saved plan; open PR (`Closes #n`); label PR **`agent:review`**; apply lifecycle labels on the issue/PR per [`docs/labels.md`](labels.md) (no GitHub Project Status).
 5. **Automated** — CI, Sonar, Snyk on the PR.
 6. **AgentReview** — First-pass review; does not merge (triggered by PR label **`agent:review`**).
-7. **Human** — Add PR label **`status:test_plan_requested`** to request AgentTest (keep Project **In review** as needed for the board).
+7. **Human** — Add PR label **`status:test_plan_requested`** to request AgentTest.
 8. **AgentTest** — Manual test checklist; does not merge.
 9. **Human** — Merge to `main`.
 10. **GitHub Actions** — [`deploy.yml`](../.github/workflows/deploy.yml) on push to `main`.
@@ -56,8 +56,7 @@ flowchart TD
 
 ### GitHub integration
 
-- **Labels:** Full list and router mapping — [`docs/labels.md`](labels.md).
-- **Project Status:** Board visibility (**Backlog → Ready → In progress → In review → Done**); agents update via GraphQL. Actions **do not** subscribe to Project Status—use labels above for webhooks.
+- **Labels:** Full list and router mapping — [`docs/labels.md`](labels.md). This automation does **not** use GitHub Projects; teams may use a board manually outside these workflows.
 - **PRs:** Must be linked to issues and use the shared PR template.
 - **Quality gates:** Sonar and Snyk workflows report required checks to PRs.
 

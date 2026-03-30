@@ -10,7 +10,7 @@ assignees: ""
 
 Clearly describe what needs to be built.
 
-When the ticket should enter **AgentPlan**, add the issue label **`status:ready`** (ready for planning). That label triggers [`router.yml`](../../.github/workflows/router.yml); see [`docs/labels.md`](../../docs/labels.md). Align Project **Status** on the board separately if you use a Project—Actions does not listen to Status alone.
+When the ticket should enter **AgentPlan**, add the issue label **`status:ready`** (ready for planning). That label triggers [`router.yml`](../../.github/workflows/router.yml); see [`docs/labels.md`](../../docs/labels.md).
 
 ## Problem / motivation
 

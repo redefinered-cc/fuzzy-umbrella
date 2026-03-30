@@ -1,7 +1,5 @@
 You have access to GitHub pull request data. The payload includes `pull_request_number`.
 
-Keep the linked issue’s Project item at **In review** while reviewing (GraphQL `updateProjectV2ItemFieldValue` if needed; see [`docs/cursor-automations.md`](../../cursor-automations.md) §9).
-
 Perform a **first-pass** code review only. A **human** will do the final review and merge. Do **not** merge this PR. Prefer a **comment** review, or request changes where needed; do not imply the change is approved for production without human sign-off.
 
 1. Load the PR: title, body, diff, labels, checks status, and linked issues.

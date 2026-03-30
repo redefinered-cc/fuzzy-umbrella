@@ -3,10 +3,6 @@ You have access to GitHub issue data.
 Plan a fix for issue with issue_number found in payload.
 Do not write or modify application code yet—planning only.
 
-## GitHub Project — Status field
-
-Use the GraphQL API (`updateProjectV2ItemFieldValue`) so the issue’s row on the team Project matches the board: set **In progress** when you start planning; after the plan is committed and handed off for human review, set **Ready**. Resolve `projectId`, the Project v2 **item** id for this issue, the **Status** `fieldId`, and each option’s `singleSelectOptionId` via GraphQL queries or team-provided ids (see [`docs/cursor-automations.md`](../../cursor-automations.md) §9). If the issue is not on the project yet, add it per team policy or skip Project updates only when impossible.
-
 1. Fetch and read the issue details (title, body, labels, comments, links).
 2. Inspect relevant repository areas to identify likely impacted components.
 3. If anything is unclear, proceed with explicit assumptions and list clarifying questions separately.
@@ -82,7 +78,6 @@ implementation_branch: issue-<number>-<same-kebab-as-filename>
 3. On the GitHub issue: **assign the issue back to the human** for plan validation (clear the AI/bot assignee if applicable), add labels `status:plan_ready` and `needs:human_input`, **remove label `status:ready`** if present (so [`router.yml`](../../.github/workflows/router.yml) does not re-fire AgentPlan), and post an issue comment that includes:
    - a short summary and a pointer to the plan file path;
    - a line: **Implementation branch:** `issue-<number>-<kebab>` (AgentDev uses this branch; do not create a new feature branch from `main` for this issue).
-   Ensure Project **Status** is **Ready** per the section above.
 
 In the final response, include:
 

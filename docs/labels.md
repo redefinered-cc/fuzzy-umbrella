@@ -5,7 +5,7 @@ This file is the **canonical registry** for labels used in the agent-driven GitH
 - **Lifecycle overview:** [`docs/agent-dev-lifecycle.md`](agent-dev-lifecycle.md)
 - **Cursor + Actions wiring:** [`docs/cursor-automations.md`](cursor-automations.md)
 
-**Project board:** The GitHub Project **Status** field (Backlog, Ready, In progress, In review, Done) is updated by agents (GraphQL) for visibility. **GitHub Actions does not listen to Project Status**—humans use **issue/PR labels** below so `router.yml` can fire webhooks reliably.
+**Routing:** The lifecycle is driven by **GitHub Issues and labels** (and PR labels). **GitHub Projects** are **not** used by this automation; your team may still use a Project board for visibility outside these prompts.
 
 ---
 
@@ -111,5 +111,5 @@ This file is the **canonical registry** for labels used in the agent-driven GitH
 ### Best practices
 
 - Prefer **one** primary lifecycle `status:*` phase label per issue where the team agrees on semantics.
-- **Human router labels** (`status:ready`, `status:in_progress`, `status:test_plan_requested`) must be **created in the GitHub repo** and applied **manually** when you want Actions to call Cursor—do not rely on Project Status alone.
+- **Human router labels** (`status:ready`, `status:in_progress`, `status:test_plan_requested`) must be **created in the GitHub repo** and applied **manually** when you want Actions to call Cursor—routing is label-driven.
 - Keep **`agent:*`** for **automation handoffs** (especially **`agent:review`** on PRs).
