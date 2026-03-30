@@ -2,10 +2,12 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
+import { DeployInfoFooter } from './components/DeployInfoFooter'
 import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
+  const deployTimestamp = import.meta.env?.VITE_DEPLOYED_AT
 
   return (
     <>
@@ -113,7 +115,7 @@ function App() {
       </section>
 
       <div className="ticks"></div>
-      <section id="spacer"></section>
+      <DeployInfoFooter deployedAt={deployTimestamp} />
     </>
   )
 }

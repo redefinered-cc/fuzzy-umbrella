@@ -161,6 +161,13 @@
   }
 }
 
+.deploy-footer {
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+  padding: 20px;
+  color: var(--text);
+}
+
 .ticks {
   position: relative;
   width: 100%;
