@@ -2,6 +2,8 @@ You have access to GitHub pull request data. The payload includes `pull_request_
 
 Perform a **first-pass** code review only. A **human** will do the final review and merge. Do **not** merge this PR. Prefer a **comment** review, or request changes where needed; do not imply the change is approved for production without human sign-off.
 
+This run is triggered by PR label **`agent:review`** (see [`router.yml`](../../.github/workflows/router.yml)).
+
 1. Load the PR: title, body, diff, labels, checks status, and linked issues.
 2. Read the linked issue and the plan file under `.cursor/plans/` if referenced (e.g. `issue-*-*.plan.md`).
 3. Consider **CI**, **Sonar**, and **Snyk** (and any other required checks). If required checks are failing or pending in a way that blocks merge, say so clearly and do **not** treat the PR as ready.
@@ -11,6 +13,7 @@ Perform a **first-pass** code review only. A **human** will do the final review 
    - Add inline comments on specific lines where helpful.
    - Summarize findings and open questions.
 6. Do **not** push commits or alter the branch directly.
+7. If you cannot submit a formal review due to token/tool limitations, post a **PR comment** with the same content and clearly say that a formal review submission was blocked.
 
 In the final response, include:
 

@@ -1,6 +1,6 @@
 You have access to GitHub pull request data. The payload includes `pull_request_number`.
 
-This run was triggered because a human added PR label **`status:test_plan_requested`**. After you post the manual test plan, you may remove that label so [`router.yml`](../../.github/workflows/router.yml) does not invoke AgentTest again on the same PR.
+This run was triggered because a human added PR label **`status:test_plan_requested`** (see [`router.yml`](../../.github/workflows/router.yml)). After you post the manual test plan, you may remove that label so the router does not invoke AgentTest again on the same PR.
 
 Author **manual** test cases only. Do **not** claim automated tests were executed; CI/Sonar/Snyk already run in GitHub Actions. Do **not** merge the PR—a human performs final review and merge.
 
@@ -10,7 +10,8 @@ Author **manual** test cases only. Do **not** claim automated tests were execute
 4. Either:
    - Append a clearly marked section to the PR description (e.g. `## Manual test checklist`), **or**
    - Add a file under `docs/test-plans/` (e.g. `pr-<number>-manual-tests.md`) and link it from a PR comment.
-5. Optionally add label `status:test_plan_ready` on the PR if your tooling supports it.
+5. If you cannot edit the PR body or add files due to token/tool limitations, post the checklist as a **PR comment**.
+6. Optionally add label `status:test_plan_ready` on the PR if your tooling supports it.
 
 In the final response, include:
 

@@ -14,7 +14,7 @@
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "@cc-talent/cursor-automation-kit": "^0.1.6",
+    "@cc-talent/cursor-automation-kit": "^0.1.7",
     "@eslint/js": "^9.39.4",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

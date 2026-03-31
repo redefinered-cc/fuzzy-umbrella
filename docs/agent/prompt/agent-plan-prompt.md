@@ -76,8 +76,10 @@ implementation_branch: issue-<number>-<same-kebab-as-filename>
   - `./.cursor/plans/issue-1-uno-react-typescript-vite.plan.md`
 2. Create `./.cursor/plans/` if it does not exist.
 3. On the GitHub issue: **assign the issue back to the human** for plan validation (clear the AI/bot assignee if applicable), add labels `status:plan_ready` and `needs:human_input`, **remove label `status:ready`** if present (so [`router.yml`](../../.github/workflows/router.yml) does not re-fire AgentPlan), and post an issue comment that includes:
-   - a short summary and a pointer to the plan file path;
-   - a line: **Implementation branch:** `issue-<number>-<kebab>` (AgentDev uses this branch; do not create a new feature branch from `main` for this issue).
+   - a short summary and **clickable links** (GitHub-flavored markdown) so humans can open the plan and branch in the browser:
+     - **Plan file:** link to the file on the implementation branch, e.g. `https://github.com/<owner>/<repo>/blob/<implementation_branch>/.cursor/plans/<same-filename>.plan.md` (resolve `<owner>/<repo>` from `git remote get-url origin` or the GitHub API/context for this repository).
+     - **Implementation branch:** link to the branch tree, e.g. `https://github.com/<owner>/<repo>/tree/<implementation_branch>` (AgentDev uses this branch; do not create a new feature branch from `main` for this issue).
+   - Format as markdown links, e.g. `[issue-42-short-name.plan.md](https://github.com/OWNER/REPO/blob/issue-42-short-name/.cursor/plans/issue-42-short-name.plan.md)` and `[issue-42-short-name](https://github.com/OWNER/REPO/tree/issue-42-short-name)`.
 
 In the final response, include:
 
