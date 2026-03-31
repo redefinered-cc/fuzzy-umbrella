@@ -1,14 +1,13 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
-import { DEPLOY_TIME_UNAVAILABLE, formatDeployTimestamp } from './deployInfo'
+import { DEPLOY_LABEL, getDeployTimeValue } from './deployInfo'
 
 function App({ deployTimestamp = import.meta.env.VITE_LAST_DEPLOYED_AT }) {
   const [count, setCount] = useState(0)
-  const deployTime =
-    formatDeployTimestamp(deployTimestamp) ?? DEPLOY_TIME_UNAVAILABLE
+  const deployTime = getDeployTimeValue(deployTimestamp)
 
   return (
     <>
@@ -118,7 +117,7 @@ function App({ deployTimestamp = import.meta.env.VITE_LAST_DEPLOYED_AT }) {
       <div className="ticks"></div>
       <footer className="app-footer">
         <p>
-          <span className="footer-label">Last deployed:</span> {deployTime}
+          <span className="footer-label">{DEPLOY_LABEL}:</span> {deployTime}
         </p>
       </footer>
     </>

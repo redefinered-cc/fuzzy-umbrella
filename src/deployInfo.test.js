@@ -1,38 +1,36 @@
-import test from 'node:test'
-import assert from 'node:assert/strict'
+import { describe, expect, it } from 'vitest'
 import {
   DEPLOY_TIME_UNAVAILABLE,
   formatDeployTimestamp,
-  getDeployFooterText,
+  getDeployTimeValue,
 } from './deployInfo.js'
 
-test('formatDeployTimestamp formats a valid ISO timestamp in UTC', () => {
-  assert.equal(
-    formatDeployTimestamp('2026-03-30T11:22:33.000Z'),
-    'Mar 30, 2026, 11:22:33 UTC',
-  )
+describe('formatDeployTimestamp', () => {
+  it('formats a valid ISO timestamp in UTC', () => {
+    expect(formatDeployTimestamp('2026-03-30T11:22:33.000Z')).toBe(
+      'Mar 30, 2026, 11:22:33 UTC',
+    )
+  })
+
+  it('returns null when timestamp is missing', () => {
+    expect(formatDeployTimestamp(undefined)).toBeNull()
+    expect(formatDeployTimestamp('')).toBeNull()
+    expect(formatDeployTimestamp('   ')).toBeNull()
+  })
+
+  it('returns null when timestamp is invalid', () => {
+    expect(formatDeployTimestamp('not-a-date')).toBeNull()
+  })
 })
 
-test('formatDeployTimestamp returns null when timestamp is missing', () => {
-  assert.equal(formatDeployTimestamp(undefined), null)
-  assert.equal(formatDeployTimestamp(''), null)
-  assert.equal(formatDeployTimestamp('   '), null)
-})
+describe('getDeployTimeValue', () => {
+  it('returns formatted value when timestamp is valid', () => {
+    expect(getDeployTimeValue('2026-03-30T11:22:33.000Z')).toBe(
+      'Mar 30, 2026, 11:22:33 UTC',
+    )
+  })
 
-test('formatDeployTimestamp returns null when timestamp is invalid', () => {
-  assert.equal(formatDeployTimestamp('not-a-date'), null)
-})
-
-test('getDeployFooterText returns formatted text when timestamp is valid', () => {
-  assert.equal(
-    getDeployFooterText('2026-03-30T11:22:33.000Z'),
-    'Last deployed: Mar 30, 2026, 11:22:33 UTC',
-  )
-})
-
-test('getDeployFooterText returns fallback text when timestamp is unavailable', () => {
-  assert.equal(
-    getDeployFooterText(undefined),
-    `Last deployed: ${DEPLOY_TIME_UNAVAILABLE}`,
-  )
+  it('returns fallback value when timestamp is unavailable', () => {
+    expect(getDeployTimeValue(undefined)).toBe(DEPLOY_TIME_UNAVAILABLE)
+  })
 })

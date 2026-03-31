@@ -1,4 +1,5 @@
 export const DEPLOY_TIME_UNAVAILABLE = 'Deploy time unavailable'
+export const DEPLOY_LABEL = 'Last deployed'
 
 const deployDateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
@@ -24,8 +25,6 @@ export function formatDeployTimestamp(rawTimestamp) {
   return `${deployDateFormatter.format(deployDate)} UTC`
 }
 
-export function getDeployFooterText(rawTimestamp) {
-  const formatted = formatDeployTimestamp(rawTimestamp)
-  const deployValue = formatted ?? DEPLOY_TIME_UNAVAILABLE
-  return `Last deployed: ${deployValue}`
+export function getDeployTimeValue(rawTimestamp) {
+  return formatDeployTimestamp(rawTimestamp) ?? DEPLOY_TIME_UNAVAILABLE
 }
