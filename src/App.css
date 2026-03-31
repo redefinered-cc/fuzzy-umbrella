@@ -182,3 +182,11 @@
     border-right-color: var(--border);
   }
 }
+
+.deploy-footer {
+  border-top: 1px solid var(--border);
+  padding: 16px 20px;
+  text-align: center;
+  color: var(--text);
+  font-size: 14px;
+}

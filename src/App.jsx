@@ -2,10 +2,14 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
+import { getDeployTimeDisplay } from './deployInfo'
 import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
+  const deployTimeDisplay = getDeployTimeDisplay(
+    import.meta.env.VITE_LAST_DEPLOYED_AT,
+  )
 
   return (
     <>
@@ -113,6 +117,9 @@ function App() {
       </section>
 
       <div className="ticks"></div>
+      <footer className="deploy-footer">
+        <p>{deployTimeDisplay}</p>
+      </footer>
       <section id="spacer"></section>
     </>
   )
