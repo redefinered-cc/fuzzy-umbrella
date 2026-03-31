@@ -4,7 +4,7 @@ import {
   DEPLOY_TIME_FALLBACK,
   formatDeployTimeUtc,
   getDeployTimeDisplay,
-} from './deployInfo'
+} from './deployInfo.js'
 
 describe('formatDeployTimeUtc', () => {
   it('formats a valid ISO timestamp in UTC', () => {
