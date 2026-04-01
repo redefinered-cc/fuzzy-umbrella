@@ -10,18 +10,20 @@ This project defines an agent-driven development lifecycle using GitHub Issues a
 
 ### Algorithm
 
-Router details: [`router.yml`](../.github/workflows/router.yml) · label catalog: [`docs/labels.md`](labels.md).
+[`router.yml`](../.github/workflows/router.yml) · [`labels.md`](labels.md)
 
-1. **Human** — Issue label **`status:ready`** → **AgentPlan**.
-2. **AgentPlan** — Plan under `.cursor/plans/`; push branch; remove **`status:ready`**; hand off to human.
-3. **Human** — Approve the plan (optional: **`status:plan_approved`** for visibility only—it does **not** trigger [`router.yml`](../.github/workflows/router.yml)). To run implementation, add issue label **`status:in_progress`** → **AgentDev** (this is the **only** issue label that fires AgentDev).
-4. **AgentDev** — Implement; open PR (`Closes #n`); PR label **`agent:review`** → **AgentReview**.
-5. **CI** — Sonar + Snyk (and other checks) on the PR.
-6. **Human** — PR label **`status:test_plan_requested`** → **AgentTest**.
-7. **AgentTest** — Post manual test checklist; does not merge.
-8. **Human** — Merge to `main` → **`deploy.yml`**.
+1. **Human** — **`status:ready`** (issue) → **AgentPlan**
+2. **AgentPlan** — `.cursor/plans/`, push branch, remove **`status:ready`**
+3. **Human** — Approve plan (optional **`status:plan_approved`**); **`status:in_progress`** (issue) → **AgentDev**
+4. **AgentDev** — Implement; open PR if needed; **`agent:review`** (PR) → **AgentReview**
+5. **CI** — Sonar, Snyk, …
+6. **AgentReview** — Comment / request changes; no merge. **Re-review:** toggle **`agent:review`** or edit PR (not on push alone).
+7. **If changes needed** — Commit on same PR branch; **re-run AgentDev:** toggle **`status:in_progress`** on issue
+8. **Human** — **`status:test_plan_requested`** (PR) → **AgentTest**
+9. **AgentTest** — Manual checklist; no merge
+10. **Human** — Merge `main` → **`deploy.yml`**
 
-**Why several labels?** Each **stage** uses a different **router hook**—you are not stacking multiple labels to start one agent. For example: **`status:ready`** starts planning; later **`status:in_progress`** alone starts AgentDev. Other labels (e.g. **`status:plan_approved`**, **`status:plan_ready`**) are for humans and the issue timeline; only the hooks above match [`router.yml`](../.github/workflows/router.yml) jobs.
+**Labels** — One router hook per stage (`status:ready`, `status:in_progress`, `agent:review`, `status:test_plan_requested`). Toggle **`status:in_progress`** or **`agent:review`** to re-run dev or review after feedback.
 
 ### High-level workflow
 
@@ -30,9 +32,11 @@ flowchart TD
   issue["Human: Create Ticket"]
   planAgent["AgentPlan: Plan"]
   humanPlanApprove["Human: Approve → status:in_progress"]
-  devAgent["AgentDev: PR"]
+  devAgent["AgentDev: implement + PR"]
   sonarSnyk["CI + Sonar + Snyk"]
   reviewAgent["AgentReview: First-pass"]
+  fixFeedback["Address review: commits on same branch"]
+  humanTestLabel["Human: status:test_plan_requested"]
   testAgent["AgentTest: Manual Test Plan"]
   humanMerge["Human: Final Review + Merge"]
   deploy["deploy.yml on main"]
@@ -42,7 +46,10 @@ flowchart TD
   humanPlanApprove --> devAgent
   devAgent --> sonarSnyk
   sonarSnyk --> reviewAgent
-  reviewAgent --> testAgent
+  reviewAgent -->|"Request changes"| fixFeedback
+  fixFeedback --> devAgent
+  reviewAgent -->|"Proceed"| humanTestLabel
+  humanTestLabel --> testAgent
   testAgent --> humanMerge
   humanMerge --> deploy
 ```
