@@ -1,22 +1,33 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { renderToStaticMarkup } from 'react-dom/server'
 import { DeployFooter } from './DeployFooter'
 import { DEPLOY_TIME_UNAVAILABLE_TEXT } from './deployTime'
 
-test('renders formatted deploy timestamp when metadata is available', () => {
-  const html = renderToStaticMarkup(
-    DeployFooter({ deployedAt: '2026-04-07T10:30:00.000Z' }),
-  )
+function getDeployLabelFromElement(element) {
+  assert.equal(element.type, 'footer')
+  assert.equal(element.props.id, 'app-footer')
 
-  assert.equal(html.includes('Last deployed:'), true)
-  assert.equal(html.includes('UTC'), true)
-  assert.equal(html.includes('Apr'), true)
+  const paragraph = element.props.children
+  assert.equal(paragraph.type, 'p')
+
+  const children = paragraph.props.children
+  assert.equal(children[0], 'Last deployed: ')
+  assert.equal(children[1].type, 'span')
+
+  return children[1].props.children
+}
+
+test('renders formatted deploy timestamp when metadata is available', () => {
+  const footerElement = DeployFooter({ deployedAt: '2026-04-07T10:30:00.000Z' })
+  const deployLabel = getDeployLabelFromElement(footerElement)
+
+  assert.equal(deployLabel.includes('UTC'), true)
+  assert.equal(deployLabel.includes('Apr'), true)
 })
 
 test('renders fallback text when deploy metadata is unavailable', () => {
-  const html = renderToStaticMarkup(DeployFooter({ deployedAt: undefined }))
+  const footerElement = DeployFooter({ deployedAt: undefined })
+  const deployLabel = getDeployLabelFromElement(footerElement)
 
-  assert.equal(html.includes('Last deployed:'), true)
-  assert.equal(html.includes(DEPLOY_TIME_UNAVAILABLE_TEXT), true)
+  assert.equal(deployLabel, DEPLOY_TIME_UNAVAILABLE_TEXT)
 })
