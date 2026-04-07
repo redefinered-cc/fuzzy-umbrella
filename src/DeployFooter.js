@@ -1,13 +1,17 @@
+import { createElement } from 'react'
 import { formatDeployTime } from './deployTime'
 
 export function DeployFooter({ deployedAt }) {
   const deployTimeLabel = formatDeployTime(deployedAt)
 
-  return (
-    <footer id="app-footer">
-      <p>
-        Last deployed: <span>{deployTimeLabel}</span>
-      </p>
-    </footer>
+  return createElement(
+    'footer',
+    { id: 'app-footer' },
+    createElement(
+      'p',
+      null,
+      'Last deployed: ',
+      createElement('span', null, deployTimeLabel),
+    ),
   )
 }
