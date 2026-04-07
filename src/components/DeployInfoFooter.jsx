@@ -1,7 +1,7 @@
 import { getLastDeployedMessage } from '../utils/deployTime'
 
 function DeployInfoFooter({ deployedAt }) {
-  return <p>{getLastDeployedMessage(deployedAt)}</p>
+  return <p className="deploy-info">{getLastDeployedMessage(deployedAt)}</p>
 }
 
 export default DeployInfoFooter
