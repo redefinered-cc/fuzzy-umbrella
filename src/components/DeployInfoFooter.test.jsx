@@ -1,8 +1,12 @@
-import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { cleanup, render, screen } from '@testing-library/react'
+import { afterEach, describe, expect, it } from 'vitest'
 import DeployInfoFooter from './DeployInfoFooter'
 
 describe('DeployInfoFooter', () => {
+  afterEach(() => {
+    cleanup()
+  })
+
   it('shows a UTC last deployed value when metadata is available', () => {
     render(<DeployInfoFooter deployedAt="2026-04-07T04:20:00Z" />)
 
