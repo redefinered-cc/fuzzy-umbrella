@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { DeployFooter } from './DeployFooter'
-import { DEPLOY_TIME_UNAVAILABLE_TEXT } from './deployTime'
+import { DeployFooter } from './DeployFooter.js'
+import { DEPLOY_TIME_UNAVAILABLE_TEXT } from './deployTime.js'
 
 function getDeployLabelFromElement(element) {
   assert.equal(element.type, 'footer')

@@ -1,5 +1,5 @@
 import { createElement } from 'react'
-import { formatDeployTime } from './deployTime'
+import { formatDeployTime } from './deployTime.js'
 
 export function DeployFooter({ deployedAt }) {
   const deployTimeLabel = formatDeployTime(deployedAt)
