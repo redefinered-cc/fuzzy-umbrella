@@ -23,6 +23,7 @@ The app footer reads deploy metadata from `VITE_DEPLOYED_AT` and displays:
 - `Last deployed: Deploy time unavailable` when the variable is missing or invalid.
 
 The timestamp is rendered in **UTC** for consistency (for example, `Apr 7, 2026, 4:20 AM UTC`).
+The display format is intentionally fixed to `en-US` for now so footer output remains deterministic across clients.
 
 ### Local development
 
