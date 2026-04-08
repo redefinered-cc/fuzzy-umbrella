@@ -23,6 +23,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Test with coverage
+        run: npm run test:coverage
+
       - name: SonarQube Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -32,6 +35,9 @@ jobs:
             -Dsonar.projectKey=${{ format('{0}_{1}', github.repository_owner, github.event.repository.name) }} \
             -Dsonar.organization=${{ github.repository_owner }} \
             -Dsonar.sources=src \
+            -Dsonar.tests=src \
+            -Dsonar.test.inclusions=src/**/*.test.{js,jsx},src/test/** \
+            -Dsonar.exclusions=src/**/*.test.{js,jsx},src/test/** \
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
             -Dsonar.host.url=${SONAR_HOST_URL} \
             -Dsonar.login=${SONAR_TOKEN}

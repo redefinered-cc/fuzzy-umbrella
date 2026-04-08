@@ -2,6 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
+import DeployInfoFooter from './components/DeployInfoFooter'
 import './App.css'
 
 function App() {
@@ -113,7 +114,9 @@ function App() {
       </section>
 
       <div className="ticks"></div>
-      <section id="spacer"></section>
+      <footer id="deploy-footer">
+        <DeployInfoFooter deployedAt={import.meta.env.VITE_DEPLOYED_AT} />
+      </footer>
     </>
   )
 }
