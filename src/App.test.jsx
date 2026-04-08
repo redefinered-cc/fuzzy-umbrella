@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 
@@ -13,6 +13,8 @@ describe('App', () => {
 
     expect(screen.getByRole('heading', { name: 'Get started' })).toBeVisible()
     expect(screen.getByText('Last deployed: Deploy time unavailable')).toBeVisible()
+    fireEvent.click(screen.getByRole('button', { name: 'Count is 0' }))
+    expect(screen.getByRole('button', { name: 'Count is 1' })).toBeVisible()
   })
 
   it('renders a formatted deploy timestamp when metadata is available', () => {
